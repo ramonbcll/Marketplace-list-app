@@ -12,7 +12,9 @@ class ListPage extends StatefulWidget {
 
 class _ListPageState extends State<ListPage> {
   String descricao = '';
-  double quantidade = 0;
+  String quantidade = '';
+  List produto = [];
+  List <String> unidades = ['Un.', 'Cx.', 'Kg.'];
 
   @override
   Widget build(BuildContext context) {
@@ -80,11 +82,12 @@ class _ListPageState extends State<ListPage> {
               suffixIcon: Icon(Icons.clear)
             ),
           ),
-          SizedBox(height: 15.0,),
+          SizedBox(height: 10.0,),
           TextField(
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.numberWithOptions(decimal: true),
             onChanged: (value) {
-              quantidade = value as double;
+              quantidade = value;
+              print(value);
             },
             decoration: InputDecoration(
               hintText: 'Quantidade',
@@ -92,17 +95,27 @@ class _ListPageState extends State<ListPage> {
               suffixIcon: Icon(Icons.clear)
             ),
           ),
+          SizedBox(height: 10.0,),
         ],
       ),
       actions: [
         TextButton(
           onPressed: () {
-            print(descricao);            
+            produto.add({
+              'produto': descricao,
+              'quantidade': quantidade.replaceAll(',', '.'),
+            });
+            print(descricao);
             print(quantidade);
+            _pop();
           },
           child: Text('Salvar')
-        )
+        ),
       ],
     )
   );
+
+  void _pop() {
+    Navigator.pop(context);
+  }
 }
