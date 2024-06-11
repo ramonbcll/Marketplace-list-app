@@ -14,7 +14,7 @@ class _ListPageState extends State<ListPage> {
   String descricao = '';
   String quantidade = '';
   List produto = [];
-  List <String> unidades = ['Un.', 'Cx.', 'Kg.'];
+  String unidade = '';
 
   @override
   Widget build(BuildContext context) {
@@ -77,28 +77,61 @@ class _ListPageState extends State<ListPage> {
               print(descricao);
             },
             decoration: InputDecoration(
-              hintText: 'Descrição',
+              labelText: 'Descrição',
               border: OutlineInputBorder(),
               suffixIcon: Icon(Icons.clear)
             ),
           ),
-          SizedBox(height: 10.0,),
-          TextField(
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
-            onChanged: (value) {
-              quantidade = value;
-              print(value);
-            },
-            decoration: InputDecoration(
-              hintText: 'Quantidade',
-              border: OutlineInputBorder(),
-              suffixIcon: Icon(Icons.clear)
-            ),
+          SizedBox(height: 15,),
+          Row(
+            children: [
+              SizedBox(
+                width: 120.0,
+                child: TextField(
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  onChanged: (value) {
+                    quantidade = value;
+                    print(value);
+                  },
+                  decoration: InputDecoration(
+                    labelText: 'Quantidade',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              SizedBox(width: 10,),
+              SizedBox(
+                width: 100,
+                height: 57,
+                child: DropdownMenu(
+                  label: Text('Unidade'),
+                  width: 100,
+                  initialSelection: 'Un.',
+                  onSelected: (value) {
+                    unidade = value!;
+                  },
+                  dropdownMenuEntries: <DropdownMenuEntry<String>>[
+                    DropdownMenuEntry(value: 'Un.', label: 'Un.'),
+                    DropdownMenuEntry(value: 'Cx.', label: 'Cx.'),
+                    DropdownMenuEntry(value: 'Kg.', label: 'Kg.')
+                  ],
+                  inputDecorationTheme: InputDecorationTheme(
+                    constraints: BoxConstraints.tight(Size.fromHeight(65)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(3),
+                    )
+                  )
+                ),
+              ),
+            ],
           ),
-          SizedBox(height: 10.0,),
         ],
       ),
       actions: [
+        TextButton(
+          onPressed: () => _pop(),
+          child: Text('Cancelar'),
+        ),
         TextButton(
           onPressed: () {
             produto.add({
