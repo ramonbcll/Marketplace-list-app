@@ -13,7 +13,9 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   String descricao = '';
   String quantidade = '';
-  List produto = [];
+  List<Map<String, dynamic>> produtos = [
+    {'produto': 'inicioTeste', 'quantidade': '2', 'unidade': 'Un.', 'status': false}
+  ];
   String unidade = '';
 
   @override
@@ -57,11 +59,33 @@ class _ListPageState extends State<ListPage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          setState(() {
-            openDialog();
-          });
+          openDialog();
         },
-      ), 
+      ),
+      body: ListView.builder(
+        itemCount: produtos.length,
+        itemBuilder: (context, index) {
+          return CheckboxListTile(
+            title: Row(
+              children: [
+                SizedBox(
+                  width: 200,
+                  child: Text('${produtos[index]['produto']}'),
+                ),
+                Text('${produtos[index]['quantidade']}'),
+                SizedBox(width: 15,),
+                Text('${produtos[index]['unidade']}'),
+              ],
+            ),//Text('${produtos[index]['produto']} - ${produtos[index]['quantidade']} ${produtos[index]['unidade']}'),
+            value: produtos[index]['status'],
+            onChanged: (bool? value) {
+              setState(() {
+                produtos[index]['status'] = value!;
+              });
+            },
+          );
+        },
+      ),
     );
   }
 
@@ -70,11 +94,11 @@ class _ListPageState extends State<ListPage> {
     builder: (context) => AlertDialog(
       title: Text('Produto'),
       content: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             onChanged: (text) {
               descricao = text;
-              print(descricao);
             },
             decoration: InputDecoration(
               labelText: 'Descrição',
@@ -91,7 +115,6 @@ class _ListPageState extends State<ListPage> {
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   onChanged: (value) {
                     quantidade = value;
-                    print(value);
                   },
                   decoration: InputDecoration(
                     labelText: 'Quantidade',
@@ -103,24 +126,23 @@ class _ListPageState extends State<ListPage> {
               SizedBox(
                 width: 100,
                 height: 57,
-                child: DropdownMenu(
-                  label: Text('Unidade'),
-                  width: 100,
-                  initialSelection: 'Un.',
-                  onSelected: (value) {
-                    unidade = value!;
+                child: DropdownButtonFormField<String>(
+                  decoration: InputDecoration(
+                    labelText: 'Unidade',
+                    border: OutlineInputBorder(),
+                  ),
+                  value: unidade.isNotEmpty ? unidade : 'Un.',
+                  items: <String>['Un.', 'Cx.', 'Kg.'].map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      unidade = value!;
+                    });
                   },
-                  dropdownMenuEntries: <DropdownMenuEntry<String>>[
-                    DropdownMenuEntry(value: 'Un.', label: 'Un.'),
-                    DropdownMenuEntry(value: 'Cx.', label: 'Cx.'),
-                    DropdownMenuEntry(value: 'Kg.', label: 'Kg.')
-                  ],
-                  inputDecorationTheme: InputDecorationTheme(
-                    constraints: BoxConstraints.tight(Size.fromHeight(65)),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(3),
-                    )
-                  )
                 ),
               ),
             ],
@@ -134,12 +156,14 @@ class _ListPageState extends State<ListPage> {
         ),
         TextButton(
           onPressed: () {
-            produto.add({
-              'produto': descricao,
-              'quantidade': quantidade.replaceAll(',', '.'),
+            setState(() {
+              produtos.add({
+                'produto': descricao,
+                'quantidade': quantidade.replaceAll(',', '.'),
+                'unidade': unidade,
+                'status': false,
+              });
             });
-            print(descricao);
-            print(quantidade);
             _pop();
           },
           child: Text('Salvar')
