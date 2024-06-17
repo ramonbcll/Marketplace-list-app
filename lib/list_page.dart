@@ -16,7 +16,7 @@ class _ListPageState extends State<ListPage> {
   List<Map<String, dynamic>> produtos = [
     {'produto': 'inicioTeste', 'quantidade': '2', 'unidade': 'Un.', 'status': false}
   ];
-  String unidade = '';
+  String unidade = 'Un.';
 
   @override
   Widget build(BuildContext context) {
@@ -65,22 +65,42 @@ class _ListPageState extends State<ListPage> {
       body: ListView.builder(
         itemCount: produtos.length,
         itemBuilder: (context, index) {
-          return CheckboxListTile(
-            title: Row(
-              children: [
-                SizedBox(
-                  width: 200,
-                  child: Text('${produtos[index]['produto']}'),
+          return Dismissible(
+            key: Key(produtos[index]['produto']),
+            background: Container(
+              color: Colors.red,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    SizedBox(height: 18),
+                    Text("Excluir",
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ],
                 ),
-                Text('${produtos[index]['quantidade']}'),
-                SizedBox(width: 15,),
-                Text('${produtos[index]['unidade']}'),
-              ],
-            ),//Text('${produtos[index]['produto']} - ${produtos[index]['quantidade']} ${produtos[index]['unidade']}'),
-            value: produtos[index]['status'],
-            onChanged: (bool? value) {
+            ),
+            child: CheckboxListTile(
+              title: Row(
+                children: [
+                  SizedBox(
+                    width: 200,
+                    child: Text('${produtos[index]['produto']}'),
+                  ),
+                  Text('${produtos[index]['quantidade']}'),
+                  SizedBox(width: 15,),
+                  Text('${produtos[index]['unidade']}'),
+                ],
+              ),//Text('${produtos[index]['produto']} - ${produtos[index]['quantidade']} ${produtos[index]['unidade']}'),
+              value: produtos[index]['status'],
+              onChanged: (bool? value) {
+                setState(() {
+                  produtos[index]['status'] = value!;
+                });
+              },
+            ),
+            onDismissed: (direction) {
               setState(() {
-                produtos[index]['status'] = value!;
+                produtos.removeAt(index);
               });
             },
           );
