@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:hello_world/home_page.dart';
 
 class ListPage extends StatefulWidget {
   const ListPage({super.key});
@@ -14,12 +13,13 @@ class _ListPageState extends State<ListPage> {
   String descricao = '';
   String quantidade = '';
   List<Map<String, dynamic>> produtos = [
-    {'produto': 'inicioTeste', 'quantidade': '2', 'unidade': 'Un.', 'status': false}
+    {'produto': 'Descrição', 'quantidade': '0', 'unidade': 'Un.', 'status': false}
   ];
   String unidade = 'Un.';
 
   @override
   Widget build(BuildContext context) {
+    final routeLista = ModalRoute.of(context)?.settings.arguments as List<Map<String, dynamic>>;
     return Scaffold(
       drawer: Drawer(
         child: Column(
@@ -36,7 +36,7 @@ class _ListPageState extends State<ListPage> {
               title: Text('Início'),
               subtitle: Text('Tela de início'),
               onTap: () {
-                Navigator.of(context).pushReplacementNamed('/home');
+                Navigator.of(context).pushReplacementNamed('/home', arguments: routeLista);
               },
             ),
             ListTile(
@@ -44,7 +44,7 @@ class _ListPageState extends State<ListPage> {
               title: Text('Logout'),
               subtitle: Text('Finalizar sessão'),
               onTap: () {
-                Navigator.of(context).pushReplacementNamed('/');
+                Navigator.of(context).pushReplacementNamed('/', arguments: routeLista);
               },
             ),
           ],
@@ -53,7 +53,14 @@ class _ListPageState extends State<ListPage> {
       appBar: AppBar(
         title: Text("Create List Page"),
         actions: [
-          CustomSwitch()
+          IconButton(
+            icon: Icon(Icons.check_outlined),
+            onPressed: () {
+              routeLista.isEmpty ? routeLista.add({'lista': produtos}) : routeLista;
+              Navigator.of(context).pushReplacementNamed('/home', arguments: routeLista);
+              print('save button');
+            },
+          )
         ],
       ),     
       floatingActionButton: FloatingActionButton(
@@ -177,6 +184,9 @@ class _ListPageState extends State<ListPage> {
         TextButton(
           onPressed: () {
             setState(() {
+              if (produtos[0]['produto'] == 'Descrição') {
+                produtos.removeAt(0);
+              }
               produtos.add({
                 'produto': descricao,
                 'quantidade': quantidade.replaceAll(',', '.'),

@@ -7,16 +7,17 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  State<HomePage> createState() {
-    return HomePageState();
-  }
+  State<HomePage> createState() => HomePageState();
+
 }
 
 class HomePageState extends State<HomePage> {
   int count = 0;
+  // late final List<Map<String, dynamic>> listas;
 
   @override
   Widget build(BuildContext context) {
+    final routeLista = ModalRoute.of(context)?.settings.arguments as List<Map<String, dynamic>>;
     return Scaffold(
       drawer: Drawer(
         child: Column(
@@ -33,7 +34,7 @@ class HomePageState extends State<HomePage> {
               title: Text('Início'),
               subtitle: Text('Tela de início'),
               onTap: () {
-                Navigator.of(context).pushReplacementNamed('/home');
+                Navigator.of(context).pushReplacementNamed('/home', arguments: routeLista);
               },
             ),
             ListTile(
@@ -41,7 +42,7 @@ class HomePageState extends State<HomePage> {
               title: Text('Logout'),
               subtitle: Text('Finalizar sessão'),
               onTap: () {
-                Navigator.of(context).pushReplacementNamed('/');
+                Navigator.of(context).pushReplacementNamed('/', arguments: routeLista);
               },
             ),
           ],
@@ -69,7 +70,7 @@ class HomePageState extends State<HomePage> {
         child: Icon(Icons.add),
         onPressed: () {
           setState(() {
-            Navigator.of(context).pushReplacementNamed('/list');
+            Navigator.of(context).pushReplacementNamed('/list', arguments: routeLista);
           });
         },
       ),

@@ -1,9 +1,6 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:hello_world/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,6 +12,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   String login = '';
   String senha = '';
+  late List<Map<String, dynamic>> listas = [];
 
   Widget _body() {
     return SingleChildScrollView(
@@ -62,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         onPressed: () {
                           if(login == "admin" && senha == "admin") {
-                            Navigator.of(context).pushReplacementNamed('/home');
+                            Navigator.of(context).pushReplacementNamed('/home', arguments: listas);
                           } else {
                             print("Login incorreto!");
                           }
