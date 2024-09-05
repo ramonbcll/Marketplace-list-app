@@ -66,14 +66,14 @@ class _ListPageState extends State<ListPage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          openDialog();
+          openDialog(routeLista);
         },
       ),
       body: ListView.builder(
-        itemCount: produtos.length,
+        itemCount: routeLista.isEmpty ? produtos.length : routeLista.length,
         itemBuilder: (context, index) {
           return Dismissible(
-            key: Key(produtos[index]['produto']),
+            key: routeLista.isEmpty ? Key(produtos[index]['produto']) : Key(routeLista[index]['produto']),
             background: Container(
               color: Colors.red,
                 child: Column(
@@ -86,28 +86,51 @@ class _ListPageState extends State<ListPage> {
                   ],
                 ),
             ),
-            child: CheckboxListTile(
-              title: Row(
-                children: [
-                  SizedBox(
-                    width: 200,
-                    child: Text('${produtos[index]['produto']}'),
-                  ),
-                  Text('${produtos[index]['quantidade']}'),
-                  SizedBox(width: 15,),
-                  Text('${produtos[index]['unidade']}'),
-                ],
-              ),//Text('${produtos[index]['produto']} - ${produtos[index]['quantidade']} ${produtos[index]['unidade']}'),
-              value: produtos[index]['status'],
-              onChanged: (bool? value) {
-                setState(() {
-                  produtos[index]['status'] = value!;
-                });
-              },
-            ),
+            child: 
+              routeLista.isEmpty
+              ? CheckboxListTile(
+                title: Row(
+                  children: [
+                    SizedBox(
+                      width: 200,
+                      child: Text('${produtos[index]['produto']}'),
+                    ),
+                    Text('${produtos[index]['quantidade']}'),
+                    SizedBox(width: 15,),
+                    Text('${produtos[index]['unidade']}'),
+                  ],
+                ),
+                value: produtos[index]['status'],
+                onChanged: (bool? value) {
+                  setState(() {
+                    produtos[index]['status'] = value!;
+                  });
+                },
+              )
+              : CheckboxListTile(
+                title: Row(
+                  children: [
+                    SizedBox(
+                      width: 200,
+                      child: Text('${routeLista[index]['produto']}'),
+                    ),
+                    Text('${routeLista[index]['quantidade']}'),
+                    SizedBox(width: 15,),
+                    Text('${routeLista[index]['unidade']}'),
+                  ],
+                ),
+                value: routeLista[index]['status'],
+                onChanged: (bool? value) {
+                  setState(() {
+                    routeLista[index]['status'] = value!;
+                  });
+                },
+              ),
             onDismissed: (direction) {
               setState(() {
-                produtos.removeAt(index);
+                routeLista.isEmpty
+                ? produtos.removeAt(index)
+                : routeLista.removeAt(index);
               });
             },
           );
@@ -116,7 +139,7 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
-  Future openDialog() => showDialog(
+  Future openDialog(routeLista) => showDialog(
     context: context,
     builder: (context) => AlertDialog(
       title: Text('Produto'),
@@ -184,10 +207,10 @@ class _ListPageState extends State<ListPage> {
         TextButton(
           onPressed: () {
             setState(() {
-              if (produtos[0]['produto'] == 'Descrição') {
-                produtos.removeAt(0);
-              }
-              produtos.add({
+              // if (produtos[0]['produto'] == 'Descrição') {
+              //   produtos.removeAt(0);
+              // }
+              routeLista.add({
                 'produto': descricao,
                 'quantidade': quantidade.replaceAll(',', '.'),
                 'unidade': unidade,
